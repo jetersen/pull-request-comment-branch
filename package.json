@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "package": "ncc build --source-map --license license.txt",
-    "release": "npm run package && git add -f dist/",
+    "release": "npm run build && npm run package && git add -f dist/",
     "test": "tsc --noEmit"
   },
   "repository": {

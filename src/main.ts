@@ -24,6 +24,9 @@ export async function run() {
     setOutput("base_ref", base.ref);
     setOutput("base_sha", base.sha);
 
+    setOutput("ctx_ref", context.ref);
+    setOutput("ctx_sha", context.sha);
+
     // Deprecated
     setOutput("ref", head.ref);
     setOutput("sha", head.sha);

@@ -5720,6 +5720,8 @@ function run() {
             core_1.setOutput("head_sha", head.sha);
             core_1.setOutput("base_ref", base.ref);
             core_1.setOutput("base_sha", base.sha);
+            core_1.setOutput("ctx_ref", github_1.context.ref);
+            core_1.setOutput("ctx_sha", github_1.context.sha);
             // Deprecated
             core_1.setOutput("ref", head.ref);
             core_1.setOutput("sha", head.sha);

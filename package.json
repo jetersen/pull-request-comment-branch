@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "description": "Gets the head ref and sha of a pull request comment",
-  "main": "lib/main.js",
+  "main": "src/main.ts",
   "scripts": {
     "build": "tsc",
     "package": "ncc build --source-map --license license.txt",

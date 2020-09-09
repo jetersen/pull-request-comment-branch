@@ -5690,7 +5690,7 @@ function wrappy (fn, cb) {
 /***/ }),
 
 /***/ 465:
-/***/ (function(__unused_webpack_module, exports) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -5705,9 +5705,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.pullRequestDetails = void 0;
+const core_1 = __webpack_require__(186);
 function pullRequestDetails(client, owner, repo, number) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { repository } = yield client.graphql(`
+        const response = yield client.graphql(`
       query pullRequestDetails($repo:String!, $owner:String!, $number:Int!) {
         repository(name: $repo, owner: $owner) {
           pullRequest(number: $number) {
@@ -5731,11 +5732,12 @@ function pullRequestDetails(client, owner, repo, number) {
             repo: repo,
             number: number
         });
+        core_1.warning(`response: ${JSON.stringify(response, null, 2)}`);
         return {
-            base_ref: repository.baseRef.name,
-            base_sha: repository.baseRef.target.oid,
-            head_ref: repository.headRef.name,
-            head_sha: repository.headRef.target.oid,
+            base_ref: response.repository.baseRef.name,
+            base_sha: response.repository.baseRef.target.oid,
+            head_ref: response.repository.headRef.name,
+            head_sha: response.repository.headRef.target.oid,
         };
     });
 }

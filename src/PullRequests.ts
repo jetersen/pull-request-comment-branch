@@ -1,3 +1,4 @@
+import { warning } from "@actions/core";
 import type { GitHub } from "@actions/github/lib/utils";
 
 type PullRequestDetails = {
@@ -23,7 +24,7 @@ export async function pullRequestDetails(
   repo: string,
   number: number,
 ) {
-  const { repository } = await client.graphql<PullRequestDetails>(
+  const response = await client.graphql<PullRequestDetails>(
     `
       query pullRequestDetails($repo:String!, $owner:String!, $number:Int!) {
         repository(name: $repo, owner: $owner) {
@@ -51,10 +52,12 @@ export async function pullRequestDetails(
     },
   );
 
+  warning(`response: ${JSON.stringify(response, null, 2)}`);
+
   return {
-    base_ref: repository.baseRef.name,
-    base_sha: repository.baseRef.target.oid,
-    head_ref: repository.headRef.name,
-    head_sha: repository.headRef.target.oid,
+    base_ref: response.repository.baseRef.name,
+    base_sha: response.repository.baseRef.target.oid,
+    head_ref: response.repository.headRef.name,
+    head_sha: response.repository.headRef.target.oid,
   };
 }

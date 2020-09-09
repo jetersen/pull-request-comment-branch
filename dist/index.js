@@ -5689,6 +5689,61 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
+/***/ 465:
+/***/ (function(__unused_webpack_module, exports) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.pullRequestDetails = void 0;
+function pullRequestDetails(client, owner, repo, number) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { repository } = yield client.graphql(`
+      query pullRequestDetails($repo:String!, $owner:String!, $number:Int!) {
+        repository(name: $repo, owner: $owner) {
+          pullRequest(number: $number) {
+            headRef {
+              name
+              target {
+                oid
+              }
+            }
+            baseRef {
+              name
+              target {
+                oid
+              }
+            }
+          }
+        }
+      }
+    `, {
+            owner: owner,
+            repo: repo,
+            number: number
+        });
+        return {
+            base_ref: repository.baseRef.name,
+            base_sha: repository.baseRef.target.oid,
+            head_ref: repository.headRef.name,
+            head_sha: repository.headRef.target.oid,
+        };
+    });
+}
+exports.pullRequestDetails = pullRequestDetails;
+
+
+/***/ }),
+
 /***/ 399:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
@@ -5707,6 +5762,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = void 0;
 const core_1 = __webpack_require__(186);
 const github_1 = __webpack_require__(438);
+const PullRequests_1 = __webpack_require__(465);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -5715,16 +5771,14 @@ function run() {
             if (!pull_request) {
                 throw Error("Comment is not on a pull request");
             }
-            const { data: { head, base } } = yield client.pulls.get(Object.assign(Object.assign({}, github_1.context.repo), { pull_number: github_1.context.issue.number }));
-            core_1.setOutput("head_ref", head.ref);
-            core_1.setOutput("head_sha", head.sha);
-            core_1.setOutput("base_ref", base.ref);
-            core_1.setOutput("base_sha", base.sha);
-            core_1.setOutput("ctx_ref", github_1.context.ref);
-            core_1.setOutput("ctx_sha", github_1.context.sha);
+            const { base_ref, base_sha, head_ref, head_sha, } = yield PullRequests_1.pullRequestDetails(client, github_1.context.repo.owner, github_1.context.repo.repo, github_1.context.issue.number);
+            core_1.setOutput("head_ref", head_ref);
+            core_1.setOutput("head_sha", head_sha);
+            core_1.setOutput("base_ref", base_ref);
+            core_1.setOutput("base_sha", base_sha);
             // Deprecated
-            core_1.setOutput("ref", head.ref);
-            core_1.setOutput("sha", head.sha);
+            core_1.setOutput("ref", head_ref);
+            core_1.setOutput("sha", head_sha);
         }
         catch (error) {
             core_1.setFailed(error.message);

@@ -20,7 +20,7 @@ interface PullRequestDetailsResponse {
 }
 
 export async function isPullRequest(token: string) {
-  if (context.issue && !context.issue.number) return false
+  if (!Number.isFinite(context.issue.number)) return false
 
   const client = getOctokit(token);
 

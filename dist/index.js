@@ -5773,7 +5773,7 @@ exports.pullRequestDetails = exports.isPullRequest = void 0;
 const github_1 = __webpack_require__(438);
 function isPullRequest(token) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (github_1.context.issue && !github_1.context.issue.number)
+        if (!Number.isFinite(github_1.context.issue.number))
             return false;
         const client = github_1.getOctokit(token);
         const { data: { pull_request } } = yield client.issues.get(Object.assign(Object.assign({}, github_1.context.repo), { issue_number: github_1.context.issue.number }));
